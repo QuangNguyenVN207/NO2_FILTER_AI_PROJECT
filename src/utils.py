@@ -1,0 +1,1 @@
+# Hàm phụ trợ (đọc file, kiểm tra dữ liệu...)
