@@ -7,10 +7,11 @@ import joblib
 # Load mô hình đã huấn luyện
 model = joblib.load("models/rf_model.pkl")
 
+# Biến lưu kết quả tốt nhất
 best_efficiency = -1
 best_config = None
 
-# Quét tỉ lệ bùn đỏ từ 10% → 80%
+# Quét tỉ lệ bùn đỏ từ 10% → 80%, bước 1% ( 71 số => 70 khoảng, mỗi khoảng = 1)
 for mud in np.linspace(10, 80, 71):
     carbon = 100 - mud
 
@@ -18,13 +19,13 @@ for mud in np.linspace(10, 80, 71):
     temperature = 600
     time = 2
 
-    # ✅ Đưa dữ liệu dự đoán về DataFrame có TÊN CỘT
+    # Đưa dữ liệu dự đoán về DataFrame có TÊN CỘT
     X_pred = pd.DataFrame(
         [[mud, carbon, temperature, time]],
         columns=["mud_ratio", "carbon_ratio", "temperature", "time"]
     )
 
-    # Dự đoán hiệu suất NO2
+    # Dự đoán hiệu suất NO2 ([0] để lấy phần tử đầu tiên trong mảng model.predict(X_pred))
     predicted_eff = model.predict(X_pred)[0]
 
     # Cập nhật cấu hình tốt nhất
@@ -33,7 +34,7 @@ for mud in np.linspace(10, 80, 71):
         best_config = (mud, carbon, temperature, time)
 
 # In kết quả
-print("🔍 TỈ LỆ TỐI ƯU DỰ ĐOÁN:")
+print("     TỈ LỆ TỐI ƯU DỰ ĐOÁN:")
 print(f"  Bùn đỏ: {best_config[0]:.1f}%")
 print(f"  Than hoạt tính: {best_config[1]:.1f}%")
 print(f"  Nhiệt độ nung: {best_config[2]} °C")
